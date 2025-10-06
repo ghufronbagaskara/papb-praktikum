@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "554742445643",
+    "project_id": "papb-praktikum-4b57c",
+    "storage_bucket": "papb-praktikum-4b57c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:554742445643:android:7e7a95ece3a69c5a5f3fce",
+        "android_client_info": {
+          "package_name": "com.example.papbpraktikum"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBC_8UXTNwjkqnf1uDp55x_p1mtXmNCjNU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
