@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -87,27 +90,76 @@ fun NotesScreen(noteViewModel: NoteViewModel) {
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn {
             items(notes) { note ->
-                NoteItem(note)
+                NoteItem(note, noteViewModel)
             }
         }
     }
 }
 
 @Composable
-fun NoteItem(note: Note) {
+fun NoteItem(note: Note, noteViewModel: NoteViewModel) {
+    var isEditing by remember { mutableStateOf(false) }
+    var newTitle by remember { mutableStateOf(note.title) }
+    var newContent by remember { mutableStateOf(note.content) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-        ) {
-            Text(text = note.title, style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = note.content, style = MaterialTheme.typography.bodyMedium)
+        Column(modifier = Modifier.padding(16.dp)) {
+            if (isEditing) {
+                OutlinedTextField(
+                    value = newTitle,
+                    onValueChange = { newTitle = it },
+                    label = { Text("Judul Baru") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = newContent,
+                    onValueChange = { newContent = it },
+                    label = { Text("Isi Catatan Baru") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Button(
+                        onClick = {
+                            noteViewModel.udpateNote(note.id, newTitle, newContent)
+                            isEditing = false
+                        }
+                    ) {
+                        Text("Simpan Perubahan")
+                    }
+                    Button(
+                        onClick = { isEditing = false },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+                    ) {
+                        Text("Batal")
+                    }
+                }
+            } else {
+                Text(text = note.title, style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = note.content, style = MaterialTheme.typography.bodyMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(onClick = { isEditing = true }) {
+                        Text("Update")
+                    }
+                    Button(
+                        onClick = { noteViewModel.deleteNote(note.id) },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onSurface)
+                    ) {
+                        Text("Delete")
+                    }
+                }
+            }
         }
     }
 }
